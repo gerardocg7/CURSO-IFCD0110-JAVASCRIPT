@@ -1,0 +1,138 @@
+<<<<<<< HEAD
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ejercicio Inicial</title>
+  <link href="index.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet" />
+  
+  <style >
+    p {
+      text-align: center;
+      font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode';
+      font-size: 50px;
+      margin-top: 40px;
+      background-image: url('../wallpaper2.jpg');
+    }
+  </style>
+
+</head>
+
+<body>
+
+   <header id="header"> 
+    <h1>TIEMPO TRANSCURRIDO</h1>
+    <h2>...desde el inicio del curso</h2>
+    <h6>Posted_by_Gerardo</h6>
+
+    <h4>
+      <a href="index.html"><< Página principal</a>
+    </h4>
+
+  </header>
+
+<script src="js/inicial.js"></script>
+
+<p id="demo">HOOOOLA</p>
+
+<div id="fondo"></div>
+
+<script>
+    
+  // Fecha de inicio de curso
+  let countDownDate = new Date("May 12, 2022 09:00:00").getTime();
+
+  // Actualizar cada 1 segundo
+  let x = setInterval(function() {
+
+  // Coger fecha y hora actual
+  let now = new Date().getTime();
+    
+  // Encontrar la distancia entre ahora y la fecha de inicio
+  let distance =   now - countDownDate;
+    
+  // Calcular el tiempo en días, horas, minutos y segundos
+  let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+  // Sacar el resultado en un elemento con la id="demo"
+  document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+  + minutes + "m " + seconds + "s ";   
+}, 1000);
+
+</script>
+
+<footer id="footer">
+  <h2>Curso IFCD 0110</h2>
+  <h6>Author: Gerardo<br>
+    <a href="mailto:cursoweb.gerardo@gmail.com">cursoweb.gerardo@gmail.com</a></h6>
+
+</footer>
+
+</body>
+</html>
+=======
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="index.css" rel="stylesheet"/>
+
+<style>
+p {
+  text-align: center;
+  font-size: 40px;
+  margin-top: 40px;
+}
+
+</style>
+</head>
+<body>
+
+<div id="fondo"></div>
+
+<h1>TIEMPO TRANSCURRIDO</h1><br>
+
+<h2>...desde el inicio del curso</h2>
+
+<p id="demo"></p>
+
+<script>
+// Set the date we're counting down to
+let countDownDate = new Date("May 12, 2022 09:00:00").getTime();
+
+// Update the count down every 1 second
+let x = setInterval(function() {
+
+  // Get today's date and time
+  let now = new Date().getTime();
+    
+  // Find the distance between now and the count down date
+  let distance =   now - countDownDate;
+    
+  // Time calculations for days, hours, minutes and seconds
+  let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+  // Output the result in an element with id="demo"
+  document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+  + minutes + "m " + seconds + "s ";
+    
+  // If the count down is over, write some text 
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+</script>
+
+</body>
+</html>
+>>>>>>> bb7986aa0cab9e70fd04484e233dfce513537a4a

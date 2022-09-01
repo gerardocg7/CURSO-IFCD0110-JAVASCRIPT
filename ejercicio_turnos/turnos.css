@@ -1,0 +1,20 @@
+h1, h2 {
+    color: white;
+    text-align: center;
+    width:100%;
+    transition: 2s
+}
+
+.background {
+    background-image: url("../ejercicio_turnos/blue.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position:center;
+    position: absolute;
+    z-index: -1;
+    width:100%;
+    top:0;
+    left:0;
+    height:100vh;
+
+}
