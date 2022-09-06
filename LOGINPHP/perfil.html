@@ -33,11 +33,16 @@
         .red {
             color: red
         }
+
+        body {
+            padding: 25px
+        }
     </style>
 </head>
 
 <body>
     <!--Contenido que solo ve el usuario logueado-->
+    <a class="btn btn-success" onclick="javasript:history.back()"><i class=" fa fa-backward"></i> Volver</a>
     <div id="bienvenida">
         <h1 style="text-align: center;">Perfil de usuario</h1>
     </div>
@@ -46,7 +51,8 @@
     <!-- <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button> -->
-    <h5>¿Cambiar user o password?</h5>
+    <h3 class="title"></h3>
+    <h5 class="modif">¿Cambiar user o password?</h5>
     <form name="modificar" id="modificar">
         <input type="hidden" name="userAnt" id="userAnt">
         <input type="hidden" name="passwordAnt" id="passwordAnt">
@@ -63,13 +69,17 @@
         <br>
         <input type="submit" class="btn btn-primary" id="boton" value="enviar">
     </form>
+    <hr>
+    <h3 style="color: red">DANGER ZONE!!</h3>
+    <button class="btn btn-danger" id="eliminar">Eliminar usuario</button>
     <script>
-        let path = "http://localhost/CURSOIFCD-0110/LOGINPHP/";
+        let path = "http://localhost/CURSO-IFCD0110/LOGINPHP/";
         let esLogin = sessionStorage.getItem('esLogin') || false;
         let pass = sessionStorage.getItem('password') || false;
         if (!esLogin) location.href = "index.html";
         $(document).ready(function () {
-            async function datos() {
+            async function listardatos() {
+
                 let enviar = await fetch(path + 'perfil.php?user=' + esLogin + '&password=' + pass,
                     {
                         method: 'GET'
@@ -79,22 +89,21 @@
                 ).then(async response => {
                     let datosUsusario = await response.json();
                     let html = `
-                    <ul>
-                        <li>Nombre de usuario: ${datosUsusario[0].login}</li>
-                        <li>Fecha de alta: ${datosUsusario[0].date}</li>
-                        <li>ID: ${datosUsusario[0].id}</li>
+                    <ul class="list-group">
+                        <li class="list-group-item">Nombre de usuario: ${datosUsusario[0].login}</li>
+                        <li class="list-group-item">Fecha de alta: ${datosUsusario[0].date}</li>
+                        <li class="list-group-item">ID: ${datosUsusario[0].id}</li>
                     </ul>`;
                     $('#bienvenida').append(html);
                     $('#userAnt').val(datosUsusario[0].login);
                     $('#passwordAnt').val(datosUsusario[0].password);
                 })
             }
-            datos();
+            listardatos();
             $('#modificar').on('submit', function (e) {
                 //formul.onsubmit = function (e) {  
                 e.preventDefault();
-                async function envio() { // Declaramos la función que enivará los datos
-                    let path = "http://localhost/CURSOIFCD-0110/LOGINPHP/";
+                async function envio(listardatos) { // Declaramos la función que enivará los datos
                     const datos = new FormData(e.target); // Aquí recogemos los datos del form                            // convertidos a objeto
                     let toSend = Object.fromEntries(datos); // Creamos el objeto tipo jSon que enviaremos
                     if (toSend.password != toSend.rpassword) {
@@ -103,7 +112,7 @@
                         $('#rpassword').focus();
                         return false;
                     }
-                    let enviar = await fetch(path + 'registro.php', // Enviamos los datos a la url path + endpoint
+                    let enviar = await fetch(path + 'perfil.php', // Enviamos los datos a la url path + endpoint
                         { // 2º parámetro: Ajustes
                             method: 'POST', // POST, GET, PUT , DELETE ..
                             body: JSON.stringify(toSend)
@@ -116,6 +125,10 @@
                                 $('.title').text(await response.text());
                                 sessionStorage.setItem('esLogin', toSend.user);
                                 sessionStorage.setItem('pass', toSend.password);
+
+                                $('.modif').text('USUARIO MODFICADO');
+                                $('.modif').addClass('red');
+
                             }
                         }).catch(error => {
                             $('.title').text(JSON.stringify(error));
@@ -123,6 +136,42 @@
                         });
                 }
                 envio();
+            })
+            $('#eliminar').on('click', function (e) {
+                e.preventDefault();
+                if (!confirm('¿Estás seguro? Esta operación es irreversible')) return false;
+                async function eliminar() {
+                    let toSend = {
+                        'user': esLogin,
+                        'password': pass,
+                        'delete': true
+                    }
+                    let enviar = await fetch(path + 'perfil.php', // Enviamos los datos a la url path + endpoint
+                        { // 2º parámetro: Ajustes
+                            method: 'POST', // POST, GET, PUT , DELETE ..
+                            body: JSON.stringify(toSend)
+                        }).then(async response => {
+
+                            if (response.status != 200) {
+                                $('.title').text('Hubo algún problema al intentar eliminar la cuenta de usuario');
+
+                            } else {
+                                sessionStorage.removeItem('esLogin');
+                                sessionStorage.removeItem('pass');
+                                $('.title').text('Usuario eliminado. Gracias por confiar en nostros');
+                                setTimeout(function () {
+                                    location.href = 'index.html';
+                                }, 1500)
+
+                            }
+                        }).catch(error => {
+                            $('.title').text(JSON.stringify(error));
+                            $('.title').addClass('red');
+                        });
+
+                }
+                eliminar();
+
             })
         });
     </script>

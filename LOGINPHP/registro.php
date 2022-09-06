@@ -11,8 +11,8 @@ $data = json_decode(file_get_contents('php://input'), true);
 
 // Valores de conexión a la base de datos
 $server = 'localhost';
-$user = 'cursoifcd';
-$pass = '12e45678';
+$user = 'ifcd0110';
+$pass = 'clase-IFCD0110';
 $db = 'clase';
 $conn = mysqli_connect($server, $user, $pass, $db);
 if (!$conn) {

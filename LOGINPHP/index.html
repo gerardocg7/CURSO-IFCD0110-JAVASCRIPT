@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,20 +14,26 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
     crossorigin="anonymous"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
+  <style>
+    #abremodal {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
   <!--Contenido que solo ve el usuario logueado-->
- <div id="bienvenida" style="display: none;margin:30px">
-  <h1 style="text-align: center;">HOLA BOOTSRAP</h1>
-  <a href="perfil.html" class="btn btn-success">Ir a mi perfil <i class="fa fa-user"></i></a>
-  <button class="btn btn-success" onclick="cerrarSesion()">
-    Cerrar sesion
-  </button>
+  <div id="bienvenida" style="display: none;margin:30px">
+    <h1 style="text-align: center;">HOLA BOOTSRAP</h1>
+    <a href="perfil.html" class="btn btn-success">Ir a mi perfil <i class="fa fa-user"></i></a>
+    <button class="btn btn-success" onclick="cerrarSesion()">
+      Cerrar sesion
+    </button>
+  </div>
   <!--Botón para abrir el modal-->
-<!-- <button id="abremodal" class="btn btn-success">Login</button>-->
-</div>
+  <button id="abremodal" class="btn btn-success">Login</button>
+
   <!--HTML que dibuja el modal que por defecto está en oculto (display none)-->
   <div id="elModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -60,32 +65,33 @@
     </div>
   </div>
   <script>
-    let cerrarSesion = function(){
-        sessionStorage.removeItem('esLogin');
-        sessionStorage.removeItem('password');
+    let cerrarSesion = function () {
+      sessionStorage.removeItem('esLogin');
+      sessionStorage.removeItem('password');
       //  window.location.href="/LOGINPHP";
       $("#elModal").modal('show');
       $('#bienvenida').hide();
-      }
+    }
     $(document).ready(function () {
-      
+      // (javascript) window.onload = function(){}
       let esLogin = sessionStorage.getItem('esLogin') || false;
       let pass = sessionStorage.getItem('password') || false;
       let path = "http://localhost/CURSO-IFCD0110/LOGINPHP/";
-       if (!esLogin) {
-         $("#elModal").modal('show');
-         // document.getElementById('elModal').modal('show')
- 
-       } else {
-         $('#bienvenida').show('slow'); // jQuery
-         //document.getelementById('bienvenida').style.display='block';  // document.getelementById('bienvenida').style.display='block' 
-         $("#elModal").modal('hide');
-       }
+      if (!esLogin) {
+        $("#elModal").modal('show');
+        // document.getElementById('elModal').modal('show')
+
+      } else {
+        $('#bienvenida').show('slow'); // jQuery
+        //document.getelementById('bienvenida').style.display='block';  // document.getelementById('bienvenida').style.display='block' 
+        $("#elModal").modal('hide');
+      }
       $('#abremodal').on('click', function () {
         // El evento click en el botón abrir modal (o ,login)
         $("#elModal").modal('show');
       })
       $('#login').on('submit', function (e) {
+        $('#abremodal').show(); 
         //formul.onsubmit = function (e) {  
         e.preventDefault();
         async function envio() { // Declaramos la función que enivará los datos
@@ -93,27 +99,33 @@
           //  dni();
           const datos = new FormData(e.target); // Aquí recogemos los datos del form                            // convertidos a objeto
           let toSend = Object.fromEntries(datos); // Creamos el objeto tipo jSon que enviaremos
-          $('#bienvenida').show('slow');
+          
           let enviar = await fetch(path + 'login.php', // Enviamos los datos a la url path + endpoint
             { // 2º parámetro: Ajustes
               method: 'POST', // POST, GET, PUT , DELETE ..
               body: JSON.stringify(toSend)
             }).then(async response => {
               $("#elModal").modal('hide');
-              esLogin = true;
-              if (response.status != 200){
-                $('#bienvenida').text('ERROR: User o Password incorrectos' + JSON.stringify(e));
-                return false;
-              }else{
-                sessionStorage.setItem('esLogin', toSend.user);
-                sessionStorage.setItem('password',toSend.password);
-              }
+              $('#bienvenida').show('slow');
+              if (response.status != 200) {
+                $('#bienvenida').text('ERROR: User o Password incorrectos');
+                $('#bienvenida').append(JSON.stringify(e));
                 
+                return false;
+              } else { 
+                
+                sessionStorage.setItem('esLogin', toSend.user);
+                sessionStorage.setItem('password', toSend.password);
+                 $('#bienvenida h1').text('Bienvenido de nuevo: ' + toSend.user);
+                 $('#bienvenida').show();
+              }
+           //   location.reload();
             }).catch(error => {
+              $('#bienvenida h1').text('Hubo algún error ¿Tienes conexión?');
+              $('#bienvenida').show();
               $("#elModal").modal('hide');
             });
           $("#elModal").modal('hide');
-          
         }
         envio();
       })

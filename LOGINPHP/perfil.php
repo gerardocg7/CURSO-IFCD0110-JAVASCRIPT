@@ -8,13 +8,24 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, FETCH, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 // Recogemos todos los datos enviado por el usuario desde l formulario de cliente
 
+// Escapar sql injection
 
 // Valores de conexión a la base de datos
 $server = 'localhost';
 $user = 'ifcd0110';
 $pass = 'clase-IFCD0110';
 $db = 'clase';
+
 $conn = mysqli_connect($server, $user, $pass, $db);
+function db_escape($value) {
+    $server = 'localhost';
+    $user = 'ifcd0110';
+    $pass = 'clase-IFCD0110';
+    $db = 'clase';
+
+    $conn = mysqli_connect($server, $user, $pass, $db);
+    return mysqli_real_escape_string($conn, $value);
+}
 if (!$conn) {
     echo '<h1>ERROR, no se ha podido conectar con la base de datos</h1>';
     http_response_code(500);
@@ -29,9 +40,9 @@ if ($method == 'GET') {
     }
     //echo "<h1>ENHORABUENA, te has coectado a la base de datos</h1>";
     //Extraemos de los datos el dato de nombre de usuario enviado por el cliente
-    $user = $_GET["user"];
+    $user =db_escape($_GET["user"]);
     // Extraemos el password enviado por el cliente
-    $password = $_GET["password"];
+    $password = db_escape($_GET["password"]);
 
     // Hacemos la consulta para saber si hay un registro que coincida exactamente con lo enviado por el usuario
     $result = mysqli_query($conn, "SELECT * from user WHERE login ='$user' && password='$password'");
@@ -57,24 +68,28 @@ if ($method == 'GET') {
 // Modificación
 
 $data = json_decode(file_get_contents('php://input'), true);
-if ($method == 'POST') {
+$user = db_escape($data['user']);
+$password = db_escape($data['password']);
+if ($method == 'POST' && !isset($data['delete'])) {
 
     if (!isset($data['userAnt']) || !isset($data['passwordAnt'])) {
         http_response_code(400);
         exit;
     }
     $userAnt = $data['userAnt'];
-    $passwordAnt = $data['userAnt'];
+    $passwordAnt = $data['passwordAnt'];
+
     $result = mysqli_query($conn, "SELECT * from user WHERE login ='$userAnt' && password='$passwordAnt'");
     if (!mysqli_num_rows($result)) {
         //El login de usuario antiguo no existe
+        echo "el usuario antiguo no existe";
         http_response_code(404);
         exit;
     }
     if ($userAnt != $user) {
         $result = mysqli_query($conn, "SELECT * from user WHERE login ='$user'");
         if (mysqli_num_rows($result)) {
-            echo "El login de usuario antiguo ya existe";
+            echo "El login del nuevo usuario ya existe";
             http_response_code(405);
             exit;
         }
@@ -92,10 +107,13 @@ if ($method == 'POST') {
 }
 
 // DELETE
+$result = mysqli_query($conn, "DELETE from user WHERE login ='$user' && password='$password'");
+if (!$result) {
 
-
+    http_response_code(500);
+    exit;
+}
 
 
 ///antiguo
-echo 'Bienvenido ' . $user;
 exit;
