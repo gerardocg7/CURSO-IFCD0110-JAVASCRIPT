@@ -69,7 +69,7 @@
         async function envio() { // Declaramos la función que enivará los datos
           let path = "http://localhost/CURSO-IFCD0110/LOGINPHP/";
           //  dni();
-          const datos = new FormData(e.target); // Aquí recogemos los datos del form                            // convertidos a objeto
+          const datos = new FormData(e.target); // Aquí recogemos los datos del Form convertidos a objeto
           let toSend = Object.fromEntries(datos); // Creamos el objeto tipo jSon que enviaremos
           if (toSend.password != toSend.rpassword) {
             alert('Las contraseñas no coinciden')
@@ -84,6 +84,7 @@
             { // 2º parámetro: Ajustes
               method: 'POST', // POST, GET, PUT , DELETE ..
               body: JSON.stringify(toSend)
+              // Registrar una función que se ejecute en caso de éxito
             }).then(async response => {
 
               if (response.status != 200) {
@@ -97,6 +98,7 @@
                   location.href="index.html";
                 },2000)
               }
+              // Registrar una función que se ejecute en caso de fallos
             }).catch(error => {
                 $('.title').text(JSON.stringify(error));
                 $('.title').addClass('red');

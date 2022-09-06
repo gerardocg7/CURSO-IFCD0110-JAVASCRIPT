@@ -6,7 +6,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, FETCH, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-// Recogemos todos los datos enviado por el usuario desde l formulario de cliente
+// Recogemos todos los datos enviado por el usuario desde el formulario de cliente
 
 // Escapar sql injection
 
@@ -38,7 +38,7 @@ if ($method == 'GET') {
         http_response_code(400);
         exit;
     }
-    //echo "<h1>ENHORABUENA, te has coectado a la base de datos</h1>";
+    //echo "<h1>ENHORABUENA, te has conectado a la base de datos</h1>";
     //Extraemos de los datos el dato de nombre de usuario enviado por el cliente
     $user =db_escape($_GET["user"]);
     // Extraemos el password enviado por el cliente
@@ -47,10 +47,10 @@ if ($method == 'GET') {
     // Hacemos la consulta para saber si hay un registro que coincida exactamente con lo enviado por el usuario
     $result = mysqli_query($conn, "SELECT * from user WHERE login ='$user' && password='$password'");
     if (mysqli_num_rows($result)) {
-        //devovlvemos los datos del usuario
+        //devolvemos los datos del usuario
         $arr = array();
         /**En javascript
-         * let nobrevar = [];
+         * let nombrevar = [];
          *  */
         /* fetch associative array */
         while ($row = mysqli_fetch_assoc($result)) {
@@ -97,8 +97,8 @@ if ($method == 'POST' && !isset($data['delete'])) {
     $result = mysqli_query($conn, "UPDATE user SET login ='$user', password='$password' WHERE login='$userAnt' && password='$passwordAnt'");
     if (!$result) {
         /**
-         *  Se comprobaría si el muevo nombre de usuario
-         * existe pero entonces ya habría que usar todo esto en funciones
+         * Se comprobaría si el nuevo nombre de usuario esiste
+         * pero entonces ya habría que usar todo esto en funciones
          * en plan if (!funcionquecomprueba)
          * */
         http_response_code(500);
