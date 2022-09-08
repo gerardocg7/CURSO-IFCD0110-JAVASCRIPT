@@ -39,6 +39,15 @@
         }
     </style>
 </head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RDE0MERL4N"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-RDE0MERL4N');
+</script>
 
 <body>
     <!--Contenido que solo ve el usuario logueado-->
@@ -73,21 +82,19 @@
     <h3 style="color: red">DANGER ZONE!!</h3>
     <button class="btn btn-danger" id="eliminar">Eliminar usuario</button>
     <script>
-        // Ruta de conexión del fichero
         let path = "http://localhost/CURSO-IFCD0110/LOGINPHP/";
-        // Creamos las variables login y password
         let esLogin = sessionStorage.getItem('esLogin') || false;
         let pass = sessionStorage.getItem('password') || false;
-        // Si los datos son correctos...
         if (!esLogin) location.href = "index.html";
         $(document).ready(function () {
-            async function listardatos() {  // (siempre nos devuelve un valor)
-                // ...cargamos la informacion del usuario con el método "fetch"
+            async function listardatos() {
+
                 let enviar = await fetch(path + 'perfil.php?user=' + esLogin + '&password=' + pass,
                     {
                         method: 'GET'
 
                     }
+
                 ).then(async response => {
                     let datosUsusario = await response.json();
                     let html = `
@@ -106,7 +113,7 @@
                 //formul.onsubmit = function (e) {  
                 e.preventDefault();
                 async function envio(listardatos) { // Declaramos la función que enivará los datos
-                    const datos = new FormData(e.target); // Aquí recogemos los datos del Form convertidos a objeto
+                    const datos = new FormData(e.target); // Aquí recogemos los datos del form                            // convertidos a objeto
                     let toSend = Object.fromEntries(datos); // Creamos el objeto tipo jSon que enviaremos
                     if (toSend.password != toSend.rpassword) {
                         alert('Las contraseñas no coinciden')
@@ -118,7 +125,6 @@
                         { // 2º parámetro: Ajustes
                             method: 'POST', // POST, GET, PUT , DELETE ..
                             body: JSON.stringify(toSend)
-                            // Registrar una función que se ejecute en caso de éxito
                         }).then(async response => {
 
                             if (response.status != 200) {
@@ -133,7 +139,6 @@
                                 $('.modif').addClass('red');
 
                             }
-                            // Registrar una función que se ejecute en caso de fallo
                         }).catch(error => {
                             $('.title').text(JSON.stringify(error));
                             $('.title').addClass('red');

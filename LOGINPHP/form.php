@@ -6,13 +6,13 @@
      header("Content-Type: application/json; charset=UTF-8");
      header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, FETCH, OPTIONS");
      header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-    // Recogemos todos los datos enviado por el usuario desde el formulario de cliente
+    // Recogemos todos los datos enviado por el usuario desde l formulario de cliente
      $data = json_decode(file_get_contents('php://input'), true);
-     // El nombre de usuario que debe ser
+     // El nombre de usuARIO QUE DEBE SER
     $userguardado="ablaracurcix";
-    // El password que debe ser
+    // El passwoprd que debe ser
     $passwordguardado="pinpanpum";
-    // Extraemos el dato de nombre de usuario enviado por el cliente
+    //Extraemos de lo0sdatos el dato de nombre de usuario enviado por el client
     $user = $data["user"];
     // Extraemos el password enviado por el cliente
     $password = $data["password"];
@@ -23,6 +23,6 @@
         exit;
         // Si no lo hacen
     }else{
-        http_response_code(401); //Not Authoriced
+        http_response_code(401);
     }
     exit;

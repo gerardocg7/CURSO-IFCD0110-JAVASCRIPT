@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -21,18 +20,33 @@
     }
   </style>
 </head>
+    
+      <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RDE0MERL4N"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-RDE0MERL4N');
+  </script>
 
 <body>
   <!--Contenido que solo ve el usuario logueado-->
   <div id="bienvenida" style="display: none;margin:30px">
-    <h1 style="text-align: center;">HOLA BOOTSRAP</h1>
+    <h1 style="text-align: center;">Mi playlist</h1>
+  <div id="nav">
+    <a href="miscanciones.html" class="btn btn-success">Mis canciones <i class="fa fa-music"></i></a>
     <a href="perfil.html" class="btn btn-success">Ir a mi perfil <i class="fa fa-user"></i></a>
+ 
     <button class="btn btn-success" onclick="cerrarSesion()">
       Cerrar sesion
     </button>
   </div>
+    <h5 id="errMsg"></h5>
+  </div>
   <!--Botón para abrir el modal-->
-  <button id="abremodal" class="btn btn-success">Login</button>
+  <button id="abremodal" class="btn btn-success" style="display: none">Login</button>
 
   <!--HTML que dibuja el modal que por defecto está en oculto (display none)-->
   <div id="elModal" class="modal fade" tabindex="-1" role="dialog">
@@ -106,18 +120,24 @@
               body: JSON.stringify(toSend)
             }).then(async response => {
               $("#elModal").modal('hide');
-              $('#bienvenida').show('slow');
+              
               if (response.status != 200) {
-                $('#bienvenida').text('ERROR: User o Password incorrectos');
-                $('#bienvenida').append(JSON.stringify(e));
-                
+                $('#bienvenida h1').text('ERROR: User o Password incorrectos');
+                $('#errMsg').append(JSON.stringify(e));
+                $('#errMsg').show();
+                $('#abremodal').show();
+                $('#bienvenida').show('slow');
+                $('#nav').hide();
                 return false;
               } else { 
                 
                 sessionStorage.setItem('esLogin', toSend.user);
                 sessionStorage.setItem('password', toSend.password);
-                 $('#bienvenida h1').text('Bienvenido de nuevo: ' + toSend.user);
-                 $('#bienvenida').show();
+                $('#errMsg').hide();
+                $('#bienvenida h1').text('Bienvenido de nuevo: ' + toSend.user);
+                $('#bienvenida').show();
+                $('#abremodal').hide();
+                $('#nav').show();
               }
            //   location.reload();
             }).catch(error => {
@@ -132,5 +152,4 @@
     });
   </script>
 </body>
-
 </html>

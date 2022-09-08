@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login usuarios</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        #registro {
+            margin: 50px
+        }
+
+        .title {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .fail-repeat {
+            border: 1px solid red !important
+        }
+
+        .red {
+            color: red
+        }
+
+        body {
+            padding: 25px
+        }
+    </style>
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RDE0MERL4N"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-RDE0MERL4N');
+</script>
+
+<body>
+    <!--Contenido que solo ve el usuario logueado-->
+    <a class="btn btn-success" onclick="javasript:history.back()"><i class=" fa fa-backward"></i> Volver</a>
+    <div id="bienvenida">
+        <div id="player"></div>
+        <h1 style="text-align: center;">Mi lista de canciones favoritas</h1>
+        <div id="lista">No hay canciones todavía en tu lista
+        </div>
+
+        <!--Bortón para abrir el modal-->
+        <!-- <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+        <h3 class="title"></h3>
+        <h5 class="modif">Añade canciones a tu lista</h5>
+        <form name="anadirSong" id="anadirSong">
+            <input type="hidden" name="user" id="user">
+            <input type="hidden" name="password" id="password">
+            <div class="form-group">
+                <label for="id_song" class="col-form-label">ID: </label>
+                <input type="text" class="form-control" name="id_song" id="id_song">
+            </div>
+            <div class="form-group">
+                <label for="artista" class="col-form-label">Artista: </label>
+                <input type="text" class="form-control" name="artista" id="artista">
+            </div>
+            <div class="form-group">
+                <label for="titulo" class="col-form-label">Título</label>: </label>
+                <input type="text" class="form-control" name="titulo" id="titulo">
+            </div>
+            <div class="form-group">
+                <label for="description" class="col-form-label">Descripcion: </label>
+                <textarea class="form-control" name="descripcion" id="descripcion"></textarea>
+            </div>
+            <br>
+            <input type="submit" class="btn btn-primary" id="boton" value="añadir canción a mi lista">
+        </form>
+        <script>
+            let path = "http://localhost/CURSO-IFCD0110/LOGINPHP/";
+            let esLogin = sessionStorage.getItem('esLogin') || false;
+            let pass = sessionStorage.getItem('password') || false;
+            if (!esLogin) location.href = "index.html";
+            $(document).ready(function () {
+                $('#user').val(esLogin);
+                $('#password').val(pass);
+
+                async function listardatos() {
+
+                    let enviar = await fetch(path + 'canciones.php?user=' + esLogin + '&password=' + pass,
+                        {
+                            method: 'GET'
+                        }
+
+                    ).then(async response => {
+                        let cancionesUsusario = await response.json();
+                        if (!cancionesUsusario.length)
+                            return;
+                        let html = "";
+                        for (let i = 0; i < cancionesUsusario.length; i++) {
+                            html += `<ul class="list-group">
+                                        <li data-videoid="${cancionesUsusario[i].id_song}" class="list-group-item videoId" onclick="play('${cancionesUsusario[i].id_song}')"><img src="https://img.youtube.com/vi/${cancionesUsusario[i].id_song}/default.jpg"></li>
+                                        <li class="list-group-item">Título: ${cancionesUsusario[i].titulo}</li>
+                                        <li class="list-group-item">Artista: ${cancionesUsusario[i].artista}</li>
+                                        <li class="list-group-item">Descripción: ${cancionesUsusario[i].descripcion}</li>
+                                     </ul>`;
+                        }
+                        $('#lista').html(html);
+                    })
+                }
+                listardatos();
+                $('#anadirSong').on('submit', function (e) {
+
+                    //formul.onsubmit = function (e) {  
+                    e.preventDefault();
+                    async function envio() {
+
+                        // Declaramos la función que enivará los datos
+                        const datos = new FormData(e.target); // Aquí recogemos los datos del form                            // convertidos a objeto
+
+                        let toSend = Object.fromEntries(datos); // Creamos el objeto tipo jSon que enviaremos
+
+                        let enviar = await fetch(path + 'canciones.php', // Enviamos los datos a la url path + endpoint
+                            { // 2º parámetro: Ajustes
+                                method: 'POST', // POST, GET, PUT , DELETE ..
+                                body: JSON.stringify(toSend)
+                            }).then(async response => {
+
+                                if (response.status != 200) {
+                                    $('.title').text(await response.text());
+                                    $('.title').addClass('red');
+                                } else {
+                                    $('.modif').text(await response.text());
+                                    listardatos()
+                                }
+                            }).catch(error => {
+                                $('.title').text(JSON.stringify(error));
+                                $('.title').addClass('red');
+                            });
+                    }
+                    envio();
+                })
+            });
+
+
+            //PLAYER YOUTUBE-->
+
+
+            // 2. This code loads the IFrame Player API code asynchronously.
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            // 3. This function creates an <iframe> (and YouTube player)
+            //    after the API code downloads.
+            var player;
+            function onYouTubeIframeAPIReady() {
+                player = new YT.Player('player', {
+                    height: '120',
+                    width: '200',
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    },
+                    showinfo: 0,
+                    enablejsapi: 1,
+                    origin: 'http://localhost'
+                });
+            }
+
+            // 4. The API will call this function when the video player is ready.
+            function onPlayerReady(event) {
+                event.target.playVideo();
+            }
+
+            // 5. The API calls this function when the player's state changes.
+            //    The function indicates that when playing a video (state=1),
+            //    the player should play for six seconds and then stop.
+            var done = false;
+            function onPlayerStateChange(event) {
+                if (event.data === 0) {
+                    nextvideo();
+                }
+            }
+            let a = 0;
+            function nextvideo(){
+                $('.videoId').each(function(){
+                    if (a ==$('.videoId').length) {
+                        a = 0;
+                    }
+                    $('.videoId')[a].click();
+                        a++;
+                })
+            }
+            function stopVideo() {
+                player.stopVideo();
+            }
+            function play(id) {
+                player.loadVideoById(id);
+                player.playVideo();
+            }
+        </script>
+</body>
+
+</html>
